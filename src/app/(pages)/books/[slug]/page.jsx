@@ -15,7 +15,8 @@ import { HelmetProvider, Helmet } from "react-helmet-async";
 import ScriptLoader from "@/app/ScriptLoader";
 import { useRouter } from "next/navigation";
 import AddToAnyShare from "@/app/components/ImagePreviewSection";
-import { FaLinkedinIn, FaFacebookF, FaInstagram, FaYoutube, FaXTwitter } from "react-icons/fa6";
+import { FaLinkedinIn, FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Page = ({ params }) => {
   const router = useRouter();
@@ -663,38 +664,102 @@ const Page = ({ params }) => {
         </section>
 
         {/* About the Book Author */}
-        {activeAuthorDetails?.authorSocial &&
-  Object.keys(activeAuthorDetails.authorSocial).length > 0 && (
-    <ul className="flex justify-center gap-4 pb-6">
-      {Object.entries(activeAuthorDetails.authorSocial).map(([platform, url], index) => {
-        const iconMap = {
-          x: <FaXTwitter size={20} />,
-          linkedin: <FaLinkedinIn size={20} />,
-          facebook: <FaFacebookF size={20} />,
-          instagram: <FaInstagram size={20} />,
-          youtube: <FaYoutube size={20} />,
-        };
+        {activeAuthorDetails && activeAuthorDetails.author_name !== "Bluone Ink" && bookInfo.authors && bookInfo.authors.length > 0 && (
+          <section
+            id="about-author"
+            className="container mx-auto text-center py-10 mt-20 pt-0 p-0 lg:w-[70%] lg:mx-auto"
+          >
+            <div className="about-author author-details-container mx-auto p-10 pt-5 rounded-2xl w-full lg:w-[85%] bg-[#FF81001A]">
+              <div className="curve_img">
+                <Image src={CurveTop} alt="Curve Top" />
+              </div>
+              {/* Display images for all authors */}
+              <div className="flex justify-center space-x-2 lg:space-x-4 mb-2">
+                {bookInfo.authors.map((author, index) => (
+                  <div
+                    key={index}
+                    className={`cursor-pointer z-[10] ${activeAuthorDetails?.id === author.id ? 'border-[#FF8100] border-4 rounded-full' : 'opacity-80 grayscale'}`}
+                    onClick={() => {
+                      setActiveAuthorDetails(author);
+                      setIsAuthExpanded(false); // Collapse description when switching author
+                    }}
+                  >
+                    <img
+                      src={author.image || authorimgurl}
+                      alt={author.author_name}
+                      className="rounded-full w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] object-cover transition duration-200"
+                      onError={(e) => {
+                        e.currentTarget.src = authorimgurl;
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
 
-        if (!iconMap[platform]) return null;
+              <div className="lg:p-8 pt-10 mx-auto">
+                <div className="relative z-[10]">
+                  <i>
+                    <h3 className="font-medium text-3xl mb-4">
+                      {/* Display active author name */}
+                      {activeAuthorDetails?.author_name}
+                    </h3>
+                  </i>
+                  <p className="text-gray-700 text-start mb-4 text-lg leading-relaxed">
+                    {isAuthExpanded
+                      ? activeAuthorDetails?.authorDescription || "Description not available."
+                      : `${activeAuthorDetails?.authorDescription?.substring(0, 600) || ""}`}
+                    {activeAuthorDetails?.authorDescription &&
+                      activeAuthorDetails.authorDescription.length > 600 && (
+                        <button
+                          onClick={() => setIsAuthExpanded(!isAuthExpanded)}
+                          className="text-[#0D1928] underline font-medium ml-2"
+                        >
+                          {isAuthExpanded ? "Read Less" : "Read More"}
+                        </button>
+                      )}
+                  </p>
+                  {/* Author's Social Media Links for active author */}
+                  {activeAuthorDetails?.authorSocial && Object.keys(activeAuthorDetails.authorSocial).length > 0 && (
+                    <ul className="flex justify-center gap-4 pb-6">
+  {Object.entries(activeAuthorDetails.authorSocial).map(([platform, url], index) => (
+    <li key={index} className="list-none">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300
+                   text-gray-700 hover:bg-[#007DD7] hover:text-white transition"
+      >
+        {platform === "x" && <FaXTwitter size={18} />}
+        {platform === "linkedin" && <FaLinkedinIn size={18} />}
+        {platform === "facebook" && <FaFacebookF size={18} />}
+        {platform === "instagram" && <FaInstagram size={18} />}
+        {platform === "youtube" && <FaYoutube size={18} />}
+      </a>
+    </li>
+  ))}
+</ul>
 
-        return (
-          <li key={index}>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-700
-                         hover:bg-[#007DD7] hover:text-white transition"
-              aria-label={platform}
-            >
-              {iconMap[platform]}
-            </a>
-          </li>
-        );
-      })}
-    </ul>
-)}
+                  )}
 
+                  <div className="w-full">
+                    <h6 className="text-[#007DD7] text-md">
+                      {/* Link to active author's page */}
+                      {activeAuthorDetails?.authslug && (
+                        <Link
+                          href={`/authors/${activeAuthorDetails.authslug}`}
+                          className="text-blue-500 underline"
+                        >
+                          Visit the Author Page
+                        </Link>
+                      )}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
 
 
