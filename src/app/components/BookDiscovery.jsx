@@ -46,7 +46,7 @@ const getAuthorsWithLinks = (book) => {
     });
   }
 
-  // Fallback: author as string (no link possible)
+  // Fallback
   if (!authors.length && typeof book.author === "string") {
     authors.push({
       name: book.author,
@@ -124,10 +124,10 @@ export default function BookDiscovery() {
 
       {/* Slider */}
       <div className="relative min-h-[240px]">
-        {/* Left Arrow */}
+        {/* Left Arrow – NOW VISIBLE ON MOBILE */}
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full hidden md:block"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full block"
         >
           <FaChevronLeft />
         </button>
@@ -157,12 +157,15 @@ export default function BookDiscovery() {
                     </Link>
                   </div>
 
-                  {/* Book title */}
                   <p className="mt-2 text-xs font-semibold text-center line-clamp-2">
-                    <Link href={`/books/${book.slug}`} className="hover:underline font-medium hover:text-blue-600">{book.title}</Link>
+                    <Link
+                      href={`/books/${book.slug}`}
+                      className="hover:underline font-medium hover:text-blue-600"
+                    >
+                      {book.title}
+                    </Link>
                   </p>
 
-                  {/* ✅ Clickable Authors */}
                   {authors.length > 0 && (
                     <p className="text-[11px] text-gray-500 text-center">
                       {authors.map((a, index) => (
@@ -192,10 +195,10 @@ export default function BookDiscovery() {
           )}
         </div>
 
-        {/* Right Arrow */}
+        {/* Right Arrow – NOW VISIBLE ON MOBILE */}
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full hidden md:block"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full block"
         >
           <FaChevronRight />
         </button>
